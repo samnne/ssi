@@ -54,8 +54,11 @@ int change_directories(char *prev_path, Node* dir)
   
   char final_path[COMMAND_MAX];
   if (dir == NULL) {
-    printf("NULL\n");
     snprintf(final_path, sizeof(final_path),"/home/%s", getlogin());
+    chdir(final_path);
+    return -1;
+  } else if (dir->value[0] == '/'){
+    snprintf(final_path, sizeof(final_path),"%s", dir->value);
     chdir(final_path);
     return -1;
   }
