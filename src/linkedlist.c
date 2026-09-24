@@ -1,8 +1,8 @@
-#include <headers/node.h>
+#include "headers/node.h"
 #include <stdlib.h>
 #include <string.h>
-#include <headers/emalloc.h>
-#include <headers/linkedlist.h>
+#include "headers/emalloc.h"
+#include "headers/linkedlist.h"
 
 #define NODEEMPTY NULL
 

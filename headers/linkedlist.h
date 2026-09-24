@@ -1,13 +1,14 @@
 #ifndef _LINKEDLIST_H
 #define _LINKEDLIST_H
 
-#include <headers/node.h>
+#include "headers/node.h"
 #include <stdlib.h>
 #include <string.h>
-#include <headers/emalloc.h>
+#include "headers/emalloc.h"
 
 
 typedef struct LinkedList LinkedList;
+typedef struct Node Node;
 
 int insert(LinkedList *ll, int *key, char *value);
 int find_node(LinkedList *ll, int *key);

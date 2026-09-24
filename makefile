@@ -6,9 +6,8 @@ all: ssi
 ssi: build/ssi.o build/emalloc.o build/node.o build/linkedlist.o
 	${GCC} ${CFLAGS} build/ssi.o build/emalloc.o build/node.o build/linkedlist.o -o ssi
 
-build/ssi.o: headers/emalloc.h ssi.c | build
+build/ssi.o: ssi.c headers/emalloc.h headers/node.h headers/linkedlist.h | build
 	${GCC} ${CFLAGS} -c ssi.c -o build/ssi.o
-
 build/emalloc.o: src/emalloc.c headers/emalloc.h | build
 	${GCC} ${CFLAGS} -c src/emalloc.c -o build/emalloc.o
 

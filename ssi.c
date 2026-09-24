@@ -1,6 +1,3 @@
-#include <headers/emalloc.h>
-#include <headers/linkedlist.h>
-#include <headers/node.h>
 #include <limits.h>
 #include <linux/limits.h>
 #include <signal.h>
@@ -10,6 +7,9 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include "headers/emalloc.h"
+#include "headers/node.h"
+#include "headers/linkedlist.h"
 
 #define COMMAND_MAX 100
 
