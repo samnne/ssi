@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <headers/emalloc.h>
+#include <headers/linkedlist.h>
 
 #define NODEEMPTY NULL
 
@@ -10,15 +11,8 @@
  *
  * Think of the head as 'ls' and then every value after that as a seperate node.
  */
-typedef struct LinkedList
-{
-    Node *head;
-    int n;
-    int (*insert)(struct LinkedList *ll, int *key, char *value);
-
-    int (*find)(struct LinkedList *ll, int *key);
-    int (*remove)(struct LinkedList *ll, int *key);
-} LinkedList;
+typedef struct LinkedList LinkedList;
+typedef struct Node Node;
 
 /**
  * int insert

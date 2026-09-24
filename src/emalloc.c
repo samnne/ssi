@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include "headers/emalloc.h"
 
 void *emalloc(size_t n) {
     void *p; 

@@ -1,7 +1,11 @@
 #ifndef _LINKEDLIST_H
 #define _LINKEDLIST_H
 
-#include "node.h"
+#include <headers/node.h>
+#include <stdlib.h>
+#include <string.h>
+#include <headers/emalloc.h>
+
 
 typedef struct LinkedList LinkedList;
 
@@ -21,3 +25,4 @@ struct LinkedList
 LinkedList *init_llist();
 
 #endif
+
