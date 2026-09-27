@@ -3,10 +3,10 @@ GCC = gcc
 
 all: ssi
 
-ssi: build/ssi.o build/emalloc.o build/node.o build/linkedlist.o
-	${GCC} ${CFLAGS} build/ssi.o build/emalloc.o build/node.o build/linkedlist.o -o ssi
+ssi: build/ssi.o build/bgjobs.o build/emalloc.o build/node.o build/linkedlist.o
+	${GCC} ${CFLAGS} build/ssi.o build/bgjobs.o build/emalloc.o build/node.o build/linkedlist.o -o ssi
 
-build/ssi.o: ssi.c headers/emalloc.h headers/node.h headers/linkedlist.h | build
+build/ssi.o: ssi.c headers/emalloc.h headers/node.h headers/linkedlist.h headers/bgjobs.h | build
 	${GCC} ${CFLAGS} -c ssi.c -o build/ssi.o
 build/emalloc.o: src/emalloc.c headers/emalloc.h | build
 	${GCC} ${CFLAGS} -c src/emalloc.c -o build/emalloc.o
@@ -16,6 +16,9 @@ build/linkedlist.o: src/linkedlist.c headers/emalloc.h headers/node.h | build
 
 build/node.o: src/node.c headers/node.h | build
 	${GCC} ${CFLAGS} -c src/node.c -o build/node.o
+
+build/bgjobs.o: src/bgjobs.c headers/bgjobs.h headers/emalloc.h | build
+	${GCC} ${CFLAGS} -c src/bgjobs.c -o build/bgjobs.o
 
 build:
 	mkdir -p build
