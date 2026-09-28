@@ -208,16 +208,16 @@ void execute_command(char *prompt, LinkedList *commands, ProcessList *processes,
   int print_history = strncmp(commands->head->value, "history", sizeof("history")) == 0;
   if (print_history)
   {
-    
+
     Node *cur = history->head;
-    while(cur){
+    while (cur)
+    {
       printf("%s\n", cur->value);
       cur = cur->next;
     }
     return;
   }
 
-  
   int bglist_bool = strncmp(commands->head->value, "bglist", sizeof(commands->head->value) - 1) == 0;
   if (bglist_bool)
   {
@@ -234,14 +234,14 @@ void execute_command(char *prompt, LinkedList *commands, ProcessList *processes,
     free(prompt);
     return;
   }
-  if (strncmp(commands->head->value, "cd", sizeof(commands->head->value) - 1) ==
-      0)
+  int change_dir = strncmp(commands->head->value, "cd", sizeof(commands->head->value) - 1) ==
+                   0;
+  if (change_dir)
   {
-    char cwd[PATH_MAX + 1];
-    cwd[PATH_MAX] = '\0';
-    getcwd(cwd, sizeof(cwd));
-
-    change_directories(cwd, commands->head->next);
+    char prev_path[PATH_MAX + 1];
+    prev_path[PATH_MAX] = '\0';
+    getcwd(prev_path, sizeof(prev_path));
+    change_directories(prev_path, commands->head->next);
     free(prompt);
     return;
   }
@@ -268,7 +268,6 @@ void execute_command(char *prompt, LinkedList *commands, ProcessList *processes,
     if (background)
     {
 
-      setpgid(0, 0);
       int dev_null = open("/dev/null", O_WRONLY);
 
       dup2(dev_null, STDOUT_FILENO);
@@ -288,7 +287,7 @@ void execute_command(char *prompt, LinkedList *commands, ProcessList *processes,
     if (background)
     {
       char *full_command = build_process_command(commands);
-      setpgid(pid, pid);
+
       add_process(processes, pid, full_command);
       free(prompt);
       return;
@@ -298,8 +297,36 @@ void execute_command(char *prompt, LinkedList *commands, ProcessList *processes,
   free(prompt);
 }
 
+char* get_branch_name()
+{
+  int status = system("git rev-parse --is-inside-work-tree > /dev/null 2>&1");
+  if (status != 0)
+  {
+    return NULL;
+  }
+  char *branch = emalloc(sizeof(char) * 256);
+  FILE *fp = popen("git branch --show-current", "r");
+  if (fp == NULL)
+  {
+    return NULL;
+  }
+  if (
+
+      fgets(branch, sizeof(branch), fp))
+  {
+    branch[strcspn(branch, "\n")] = 0;
+  }
+  if (branch > 0)
+  {
+    return branch;
+  }
+  return NULL;
+}
+
 void printprompt()
 {
+  char *branch_name = get_branch_name();
+
   char *username = getlogin();
   if (username == NULL)
   {
@@ -319,11 +346,12 @@ void printprompt()
   char cwd[PATH_MAX + 1];
   cwd[PATH_MAX] = '\0';
   getcwd(cwd, sizeof(cwd));
-  printf(BLU "%s@%s: %s > " RESET, username, hostname, cwd);
+  printf(BLU "%s@%s: %s * %s > " RESET, username, hostname, cwd, branch_name);
 }
 
 void add_to_history(LinkedList *history, char *prompt, int id)
 {
+
   history->insert(history, &id, prompt);
 }
 
@@ -336,10 +364,11 @@ int main()
   ProcessList processes;
   init_process_list(&processes);
   LinkedList *history = init_llist();
-  int count = 0;
+
+  // The main event loop
   while (1)
   {
-    count++;
+
     if (sigchild_flag)
     {
       sigchild_flag = 0;
@@ -347,12 +376,14 @@ int main()
     }
 
     printprompt();
-
+    // the prompt to read commands
     char *prompt = NULL;
     size_t size = 0;
     ssize_t characters_read = getline(&prompt, &size, stdin);
     if (characters_read == -1)
     {
+
+      // handles the ^C flag in terminal
       if (ctrl_c_flag)
       {
         ctrl_c_flag = 0;
@@ -365,15 +396,29 @@ int main()
       free(prompt);
       exit(0);
     }
+
+    /**
+     * Exits the program
+     * free's prompt and free process_list
+     */
     if (strncmp("exit\n", prompt, strlen("exit\n")) == 0)
     {
+      free_process_list(&processes);
+      Node *cur = history->head;
+      while (cur)
+      {
 
+        Node *next = cur->next;
+        free(cur);
+        cur = next;
+      }
+      free(history);
       free(prompt);
       exit(0);
     }
     prompt[strcspn(prompt, "\n")] = '\0';
+    add_to_history(history, prompt, history->n);
     LinkedList *commands = store_command(prompt);
-    add_to_history(history, prompt, count);
     if (commands->head == NULL)
     {
       free(commands->head);

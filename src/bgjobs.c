@@ -32,7 +32,7 @@ void init_process_list(ProcessList *processes)
   processes->head = NULL;
   processes->next_procces_id = 1;
 }
-
+// free process and free processlist here.
 void free_process(bg_process *process)
 {
   free(process->command);
@@ -53,13 +53,15 @@ void free_process_list(ProcessList *processes)
 
 /**
  * Add process to background process list
- */
-void add_process(ProcessList *processes, pid_t pid, const char *cmdline)
+ * ARGS: ProcessList *processes, process list, pid_t pid: the pid, char* command: the command to add
+ * RETURN: void
+ */ 
+void add_process(ProcessList *processes, pid_t pid, char *command)
 {
   bg_process *process = emalloc(sizeof(bg_process));
 
   process->pid = pid;
-  process->command = strdup(cmdline);
+  process->command = strdup(command);
   process->state = PROCESS_RUNNING;
   process->procces_id = processes->next_procces_id++;
   process->next = NULL;
@@ -78,6 +80,14 @@ void add_process(ProcessList *processes, pid_t pid, const char *cmdline)
 
   printf("%d: %d started\n", process->procces_id, pid);
 }
+
+/**
+ * Removes a process from processlist, done once a process is finished
+ * 
+ * ARGS: ProcessList *processs: the global process list
+ *        pid_t pid: a process id to search for and remove
+ * RETURNS: void
+ */
 void remove_process(ProcessList *processes, pid_t pid)
 {
   bg_process *cur = processes->head;
@@ -100,6 +110,12 @@ void remove_process(ProcessList *processes, pid_t pid)
   }
 }
 
+
+/**
+ * Updates the processes to check whether a bg process has finished
+ * ARGS: the process list
+ * RETURN: void
+ */
 void update_processes(ProcessList *processes)
 {
   int status;
