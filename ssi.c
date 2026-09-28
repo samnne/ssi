@@ -76,7 +76,7 @@ int change_directories(char *prev_path, Node *dir)
   }
   snprintf(final_path, sizeof(final_path), "%s/%s", prev_path, dir->value);
   int child_process_id = chdir(final_path);
-
+ 
   return child_process_id;
 }
 
@@ -96,8 +96,9 @@ char **command_to_string_array(LinkedList *commands, int count)
   int i = 0;
   while (i < count && cur != NULL)
   {
+    
     argv[i++] = cur->value;
-
+    
     cur = cur->next;
   }
   argv[i] = NULL;
@@ -241,7 +242,8 @@ void execute_command(char *prompt, LinkedList *commands, ProcessList *processes,
     char prev_path[PATH_MAX + 1];
     prev_path[PATH_MAX] = '\0';
     getcwd(prev_path, sizeof(prev_path));
-    change_directories(prev_path, commands->head->next);
+    int success = change_directories(prev_path, commands->head->next);
+    success == -1 ? printf("cd: %s directory doesn't exist \n\n", commands->head->next->value) : printf("\n");
     free(prompt);
     return;
   }
@@ -278,6 +280,7 @@ void execute_command(char *prompt, LinkedList *commands, ProcessList *processes,
     signal(SIGINT, SIG_DFL);
 
     char **argv = command_to_string_array(commands, commands->n);
+    
     execvp(argv[0], argv);
     exit(1);
   }
@@ -294,6 +297,7 @@ void execute_command(char *prompt, LinkedList *commands, ProcessList *processes,
     }
     waitpid(pid, &status, 0);
   }
+  printf("\n");
   free(prompt);
 }
 
