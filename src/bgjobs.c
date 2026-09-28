@@ -76,7 +76,7 @@ void add_process(ProcessList *processes, pid_t pid, const char *cmdline)
     cur->next = process;
   }
 
-  printf("[%d] %d\n", process->procces_id, pid);
+  printf("%d: %d started\n", process->procces_id, pid);
 }
 void remove_process(ProcessList *processes, pid_t pid)
 {
@@ -112,8 +112,6 @@ void update_processes(ProcessList *processes)
       if (cur->pid == pid)
       {
         cur->state = PROCESS_DONE;
-        printf("[%d]+ Done    %s\n", cur->procces_id, cur->command);
-        remove_process(processes, cur->pid);
         break;
       }
 
