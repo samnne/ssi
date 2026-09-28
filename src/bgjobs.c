@@ -78,7 +78,7 @@ void add_process(ProcessList *processes, pid_t pid, char *command)
     cur->next = process;
   }
 
-  printf("%d: %d started\n", process->procces_id, pid);
+  printf("%d: %d started\n\n", process->procces_id, pid);
 }
 
 /**
