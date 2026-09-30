@@ -225,6 +225,7 @@ void execute_command(char *prompt, LinkedList *commands, ProcessList *processes,
       printf("%s\n", cur->value);
       cur = cur->next;
     }
+    printf("\n");
     return;
   }
 
@@ -240,7 +241,7 @@ void execute_command(char *prompt, LinkedList *commands, ProcessList *processes,
       cur = cur->next;
     }
 
-    printf("Total Background Jobs: %d\n", count);
+    printf("Total Background Jobs: %d\n\n", count);
     free(prompt);
     return;
   }
@@ -261,7 +262,7 @@ void execute_command(char *prompt, LinkedList *commands, ProcessList *processes,
                            sizeof(commands->head->value) - 1) == 0;
   if (background && commands->head->next == NULL)
   {
-    printf("bg: missing command\n");
+    printf("bg: missing command\n\n");
 
     return;
   }
@@ -306,6 +307,7 @@ void execute_command(char *prompt, LinkedList *commands, ProcessList *processes,
     }
     waitpid(pid, &status, 0);
   }
+
   printf("\n");
   free(prompt);
 }
@@ -344,7 +346,7 @@ void printprompt()
   if (username == NULL)
   {
     printf("Couldn't retrive username\n");
-    return;
+    exit(1);
   }
   char hostname[HOST_NAME_MAX + 1];
   hostname[HOST_NAME_MAX] = '\0';
@@ -354,7 +356,7 @@ void printprompt()
   else
   {
     printf("Couldn't retrive hostname\n");
-    return;
+    exit(1);
   }
   char cwd[PATH_MAX + 1];
   cwd[PATH_MAX] = '\0';
