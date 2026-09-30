@@ -116,8 +116,17 @@ LinkedList *store_command(char *prompt)
   char *deli = " \t\r\n";
   char *token = strtok(prompt, deli);
   int i = 0;
+  int quote = 0;
   while (token != NULL && i < COMMAND_MAX - 1)
   {
+	 
+	char s = *token; 
+	for(; s; s++){
+	 	if(s == '"'){
+			quote = 1;	
+		}
+	}
+	 
     ll->insert(ll, &i, token);
     i++;
     token = strtok(NULL, deli);
