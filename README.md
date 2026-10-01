@@ -18,6 +18,7 @@ username@hostname: /home/username/ > history
 touch main.c
 cd build
 history
+username@hostname: /home/username/ > 
 ```
 
 ### UI Prompt
@@ -32,9 +33,11 @@ The shell also supports some git functionality. The prompt displays (null) if it
 username@hostname: /home/username/ * branch-name > 
 ```
 
-The feature has its limits as this implementation uses strtok() to tokenize a users input, which makes it increasingly difficult to capture a nested quotes i.e `git commit -m "foo bar"` will break git in this ssi, but `git commit -m "foobar" will work as the tokenizer splits across spaces. 
+The feature has its limits as this implementation uses strtok() to tokenize a users input, which makes it increasingly difficult to capture a nested quotes i.e `git commit -m "foo bar"` will break git in this ssi, but `git commit -m "foo_bar"` will work as the tokenizer splits across spaces and in the interest of time, I could not build my own tokenizer to solve this. 
 
 ## Future improvements 
+
+### Features I wish I could add to this ssi if given enough time. 
 
 Keyboard Handling: Cursor movement and handling keyboard input. For example using arrow keys to move the input cursor to insert between prompts. 
 
