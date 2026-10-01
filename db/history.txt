@@ -1,7 +1,0 @@
-history 
-cd build
-cd build
-cd build
-history
-rm main.py
-git add .
