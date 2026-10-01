@@ -25,7 +25,10 @@
 
 int ctrl_c_flag = 0;
 int sigchild_flag = 0;
+// Flag to catch signals in readline
 int rl_catch_signals = 0;
+
+
 /**
  * Signal handler for terminal signals in the SSI
  * Args:
@@ -138,7 +141,9 @@ LinkedList *store_command(char *prompt)
 }
 
 /**
- * Build bg_process command
+ * Build bg_process command to be copied into the bg_process struct.
+ * Args: LinkedList *commands, the linked list of commands
+ * Returns: char* the command string to be copied into the bg_process struct.
  */
 char *build_process_command(LinkedList *commands)
 {
@@ -162,6 +167,12 @@ char *build_process_command(LinkedList *commands)
   return full_command;
 }
 
+/**
+ * Function build_executable_string
+ * Args: ProcessList *processes, bg_process *cur
+ * Returns: void
+ * Builds the executable string for the background process and prints it to the terminal.
+ */
 void build_executable_string(ProcessList *processes, bg_process *cur)
 {
   // get command base from command string
@@ -324,6 +335,11 @@ void execute_command(char *prompt, LinkedList *commands, ProcessList *processes,
   free(prompt);
 }
 
+
+/**
+ * Gets the current GIT branch name if the current directory is a GIT repository.
+ * Returns: char* the branch name or NULL if not a GIT repository.
+ */
 char *get_branch_name()
 {
   int status = system("git rev-parse --is-inside-work-tree > /dev/null 2>&1");
@@ -350,6 +366,11 @@ char *get_branch_name()
   return NULL;
 }
 
+/**
+ * Function printprompt
+ * Args: None
+ * Returns: char* the prompt string to be printed to the terminal.
+ */
 char *printprompt()
 {
   char *branch_name = get_branch_name();
@@ -383,6 +404,8 @@ char *printprompt()
   return prompt_str;
 }
 
+
+// Project entry point
 int main()
 {
   // init the sigaction to handle the actions

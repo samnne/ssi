@@ -6,6 +6,7 @@
 #include "unistd.h"
 #include "headers/linkedlist.h"
 
+// Function to get the current working directory
 char cwd[1024];
 char *get_cwd(char cwd[1024], size_t size)
 {
@@ -19,6 +20,8 @@ char *get_cwd(char cwd[1024], size_t size)
 
     return result;
 }
+
+// Appends a command to the history file and the linked list
 void append_to_history_db(LinkedList *history, char *command)
 {
 
@@ -34,6 +37,8 @@ void append_to_history_db(LinkedList *history, char *command)
     fclose(file);
 }
 
+
+// Loads the history from the history file into the linked list
 void load_history_from_db(LinkedList *history)
 {
 

@@ -10,6 +10,8 @@
 typedef struct LinkedList LinkedList;
 typedef struct Node Node;
 
+// Functions for linked list operations
+// insert, find, and remove nodes from the linked list
 int insert(LinkedList *ll, int *key, char *value);
 int find_node(LinkedList *ll, int *key);
 int remove_node(LinkedList *ll, int *key);

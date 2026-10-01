@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct Node  Node;
+typedef struct Node Node;
 // create node function for linkedlist.c to simplfy file.
 Node *createNode(int key, char *command) {
 

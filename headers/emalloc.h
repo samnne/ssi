@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
+// Emalloc function to handle memory allocation errors and clean up code in ssi.c and other files
 void *emalloc(size_t n);
 
 #endif
