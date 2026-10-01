@@ -38,10 +38,9 @@ void signal_handler(int sig)
   {
   case SIGINT:
     ctrl_c_flag = 1;
- 
+
     write(STDOUT_FILENO, "^C\n\n", 4);
 
-   
     rl_on_new_line();
     rl_replace_line("", 0);
     rl_redisplay();
@@ -148,10 +147,10 @@ char *build_process_command(LinkedList *commands)
   Node *cur = commands->head->next;
   while (cur != NULL)
   {
-    str_length += strlen(cur->value);
+    str_length += strlen(cur->value) + 1;
     cur = cur->next;
   }
-  char *full_command = emalloc(str_length);
+  char *full_command = emalloc(str_length + 1);
   cur = commands->head->next;
   strcpy(full_command, cur->value);
   cur = cur->next;
@@ -167,7 +166,7 @@ char *build_process_command(LinkedList *commands)
 void build_executable_string(ProcessList *processes, bg_process *cur)
 {
   // get command base from command string
-  char *cpy = emalloc(strlen(cur->command));
+  char *cpy = emalloc(strlen(cur->command) + 1);
   strcpy(cpy, cur->command);
   char *c_base = strtok(cpy, " ");
 
