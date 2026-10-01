@@ -17,7 +17,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#define COMMAND_MAX 100
+#define COMMAND_MAX 1024
 #define BLU "\x1B[1;38;5;80m"
 #define LBLU "\x1B[38;5;80m"
 
@@ -76,7 +76,7 @@ int change_directories(char *prev_path, Node *dir)
   char final_path[COMMAND_MAX];
   if (dir == NULL)
   {
-    snprintf(final_path, sizeof(final_path), "/home/%s", getlogin());
+    snprintf(final_path, sizeof(final_path) + sizeof(getlogin()), "/home/%s", getlogin());
     chdir(final_path);
     return -1;
   }
