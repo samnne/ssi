@@ -270,6 +270,7 @@ void execute_command(char *prompt, LinkedList *commands, ProcessList *processes,
     return;
   }
 
+  printf("hello\n");
   pid_t pid = fork();
   if (pid < 0)
   {
@@ -450,7 +451,6 @@ int main()
       free(commands->head);
       free(commands);
 
-      printf("\n");
       free(prompt);
 
       continue;
