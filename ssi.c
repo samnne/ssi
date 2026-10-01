@@ -76,20 +76,19 @@ int change_directories(char *prev_path, Node *dir)
   char final_path[COMMAND_MAX];
   if (dir == NULL)
   {
-    snprintf(final_path, sizeof(final_path) + sizeof(getlogin()), "/home/%s", getlogin());
-    chdir(final_path);
-    return -1;
+    snprintf(final_path, sizeof(final_path), "/home/%s", getlogin());
+
+    return chdir(final_path);
   }
   else if (dir->value[0] == '/')
   {
     snprintf(final_path, sizeof(final_path), "%s", dir->value);
-    chdir(final_path);
-    return -1;
+
+    return chdir(final_path);
   }
   snprintf(final_path, sizeof(final_path), "%s/%s", prev_path, dir->value);
-  int child_process_id = chdir(final_path);
 
-  return child_process_id;
+  return chdir(final_path);
 }
 
 /*
@@ -147,7 +146,7 @@ char *build_process_command(LinkedList *commands)
   Node *cur = commands->head->next;
   while (cur != NULL)
   {
-    str_length += strlen(cur->value) + 1 ;
+    str_length += strlen(cur->value) + 1;
     cur = cur->next;
   }
   char *full_command = emalloc(str_length);
@@ -256,7 +255,17 @@ void execute_command(char *prompt, LinkedList *commands, ProcessList *processes,
     prev_path[PATH_MAX] = '\0';
     getcwd(prev_path, sizeof(prev_path));
     int success = change_directories(prev_path, commands->head->next);
-    success == -1 ? printf("cd: %s directory doesn't exist \n\n", commands->head->next->value) : printf("\n");
+
+   
+    if (success == -1)
+    {
+      printf("cd: %s directory doesn't exist \n\n",
+             commands->head->next ? commands->head->next->value : "home");
+    }
+    else
+    {
+      printf("\n");
+    }
     free(prompt);
     return;
   }
@@ -269,7 +278,7 @@ void execute_command(char *prompt, LinkedList *commands, ProcessList *processes,
 
     return;
   }
-  
+
   pid_t pid = fork();
   if (pid < 0)
   {
@@ -365,7 +374,7 @@ char *printprompt()
   cwd[PATH_MAX] = '\0';
   getcwd(cwd, sizeof(cwd));
   int needed = snprintf(NULL, 0, BLU "%s@%s: %s " RESET LBLU "%s > " RESET,
-                         username, hostname, cwd, branch_name);
+                        username, hostname, cwd, branch_name);
   char *prompt_str = emalloc(needed + 1);
   sprintf(prompt_str, BLU "%s@%s: %s " RESET LBLU "%s > " RESET,
           username, hostname, cwd, branch_name);
