@@ -42,7 +42,9 @@ The feature has its limits as this implementation uses strtok() to tokenize a us
 
 Usage of a custom tokenizer that detects strings/messages and stores them in one node entry.
 
+### File Redirection 
 
+File redirection, so '<' and '>' can correctly pipe it 
 
 
 
