@@ -143,14 +143,14 @@ LinkedList *store_command(char *prompt)
  */
 char *build_process_command(LinkedList *commands)
 {
-  int str_length = 0;
+  int str_length = 1;
   Node *cur = commands->head->next;
   while (cur != NULL)
   {
-    str_length += strlen(cur->value) + 1;
+    str_length += strlen(cur->value) + 1 ;
     cur = cur->next;
   }
-  char *full_command = emalloc(str_length + 1);
+  char *full_command = emalloc(str_length);
   cur = commands->head->next;
   strcpy(full_command, cur->value);
   cur = cur->next;
