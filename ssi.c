@@ -214,7 +214,7 @@ void execute_command(char *prompt, LinkedList *commands, ProcessList *processes,
     Node *cur = history->head;
     while (cur)
     {
-      printf("%s\n", cur->value);
+      printf("%d: \t %s\n", cur->key, cur->value);
       cur = cur->next;
     }
     printf("\n");
