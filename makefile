@@ -1,10 +1,10 @@
 CFLAGS = -Wall -I.
 GCC = gcc
 
-all: ssi
+all: ssi 
 
-ssi: build/ssi.o build/bgjobs.o build/emalloc.o build/node.o build/linkedlist.o
-	${GCC} ${CFLAGS} build/ssi.o build/bgjobs.o build/emalloc.o build/node.o build/linkedlist.o -o ssi
+ssi: build/ssi.o build/bgjobs.o build/emalloc.o build/node.o build/linkedlist.o build/historyfile.o | db
+	${GCC} ${CFLAGS} build/ssi.o build/bgjobs.o build/emalloc.o build/node.o build/linkedlist.o build/historyfile.o -o ssi
 
 build/ssi.o: ssi.c headers/emalloc.h headers/node.h headers/linkedlist.h headers/bgjobs.h | build
 	${GCC} ${CFLAGS} -c ssi.c -o build/ssi.o
@@ -19,6 +19,13 @@ build/node.o: src/node.c headers/node.h | build
 
 build/bgjobs.o: src/bgjobs.c headers/bgjobs.h headers/emalloc.h | build
 	${GCC} ${CFLAGS} -c src/bgjobs.c -o build/bgjobs.o
+
+build/historyfile.o: src/historyfile.c headers/linkedlist.h headers/emalloc.h | build 
+	${GCC} ${CFLAGS} -c src/historyfile.c -o build/historyfile.o
+
+db:
+	mkdir -p db
+	touch db/history.txt
 
 build:
 	mkdir -p build

@@ -8,7 +8,9 @@ PATH. The program uses system functions for change directory functionality, main
 
 ## Extra Features not required
 
-### `history`: gets current session command history in the shell
+### `history`: gets command history written in the p1 shell
+
+The history of a current session gets appended to db/history.txt and persists past sessions.
 
 Example Usage
 ```bash
@@ -34,9 +36,9 @@ The feature has its limits as this implementation uses strtok() to tokenize a us
 
 ## Future improvements 
 
-Keyboard Handling: I would LOVE to add cursor movement and handling keyboard input. For example using arrow keys to move the input cursor to insert between prompts. 
+Keyboard Handling: Cursor movement and handling keyboard input. For example using arrow keys to move the input cursor to insert between prompts. 
 
-ArrowKey History: This extends the above improvement, but like in all shell's pressing the up arrow key and the down arrow key, it traverses through the current shell history db. 
+Arrow Key History: This extends the above improvement, but in all shell implemtations, pressing the up arrow key or the down arrow key, it traverses through the current shell history db. 
 
 
 

@@ -2,6 +2,7 @@
 #include "headers/linkedlist.h"
 #include "headers/node.h"
 #include "headers/bgjobs.h"
+#include "headers/historyfile.h"
 #include <limits.h>
 #include <linux/limits.h>
 #include <stdio.h>
@@ -355,11 +356,6 @@ void printprompt()
   printf(BLU "%s@%s: %s * %s > " RESET, username, hostname, cwd, branch_name);
 }
 
-void add_to_history(LinkedList *history, char *prompt, int id)
-{
-
-  history->insert(history, &id, prompt);
-}
 
 int main()
 {
@@ -370,8 +366,8 @@ int main()
   ProcessList processes;
   init_process_list(&processes);
   LinkedList *history = init_llist();
-
-  // The main event loop
+  load_history_from_db(history);
+  // The main event loop 
   while (1)
   {
 
@@ -423,7 +419,7 @@ int main()
       exit(0);
     }
     prompt[strcspn(prompt, "\n")] = '\0';
-    add_to_history(history, prompt, history->n);
+    append_to_history_db(history, prompt);
     LinkedList *commands = store_command(prompt);
     if (commands->head == NULL)
     {
@@ -434,7 +430,6 @@ int main()
       free(prompt);
       continue;
     }
-
     execute_command(prompt, commands, &processes, history);
   }
 
