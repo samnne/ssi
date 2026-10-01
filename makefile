@@ -4,9 +4,9 @@ GCC = gcc
 all: ssi 
 
 ssi: build/ssi.o build/bgjobs.o build/emalloc.o build/node.o build/linkedlist.o build/historyfile.o | db
-	${GCC} ${CFLAGS} build/ssi.o build/bgjobs.o build/emalloc.o build/node.o build/linkedlist.o build/historyfile.o -o ssi
+	${GCC} ${CFLAGS} build/ssi.o build/bgjobs.o build/emalloc.o build/node.o build/linkedlist.o build/historyfile.o -o ssi -lreadline
 
-build/ssi.o: ssi.c headers/emalloc.h headers/node.h headers/linkedlist.h headers/bgjobs.h | build
+build/ssi.o: ssi.c headers/emalloc.h headers/node.h headers/linkedlist.h headers/historyfile.h headers/bgjobs.h | build
 	${GCC} ${CFLAGS} -c ssi.c -o build/ssi.o
 build/emalloc.o: src/emalloc.c headers/emalloc.h | build
 	${GCC} ${CFLAGS} -c src/emalloc.c -o build/emalloc.o

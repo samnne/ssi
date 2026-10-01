@@ -37,11 +37,8 @@ The feature has its limits as this implementation uses strtok() to tokenize a us
 
 ## Future improvements 
 
-### Features I wish I could add to this ssi if given enough time. 
 
-Keyboard Handling: Cursor movement and handling keyboard input. For example using arrow keys to move the input cursor to insert between prompts. 
 
-Arrow Key History: This extends the above improvement, but in all shell implemtations, pressing the up arrow key or the down arrow key, it traverses through the current shell history db. 
 
 
 

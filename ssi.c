@@ -9,18 +9,23 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
+#include <readline/readline.h>
+
+#include <readline/history.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include <fcntl.h>
 
 #define COMMAND_MAX 100
-#define BLU "\x1B[1;34m"
+#define BLU "\x1B[1;38;5;80m"
+#define LBLU "\x1B[38;5;80m"
+
 #define RESET "\x1B[0m"
 
 int ctrl_c_flag = 0;
 int sigchild_flag = 0;
-
+int rl_catch_signals = 0;
 /**
  * Signal handler for terminal signals in the SSI
  * Args:
@@ -33,6 +38,13 @@ void signal_handler(int sig)
   {
   case SIGINT:
     ctrl_c_flag = 1;
+ 
+    write(STDOUT_FILENO, "^C\n\n", 4);
+
+   
+    rl_on_new_line();
+    rl_replace_line("", 0);
+    rl_redisplay();
     return;
   case SIGCHLD:
     sigchild_flag = 1;
@@ -77,7 +89,7 @@ int change_directories(char *prev_path, Node *dir)
   }
   snprintf(final_path, sizeof(final_path), "%s/%s", prev_path, dir->value);
   int child_process_id = chdir(final_path);
- 
+
   return child_process_id;
 }
 
@@ -97,9 +109,9 @@ char **command_to_string_array(LinkedList *commands, int count)
   int i = 0;
   while (i < count && cur != NULL)
   {
-    
+
     argv[i++] = cur->value;
-    
+
     cur = cur->next;
   }
   argv[i] = NULL;
@@ -282,7 +294,7 @@ void execute_command(char *prompt, LinkedList *commands, ProcessList *processes,
     signal(SIGINT, SIG_DFL);
 
     char **argv = command_to_string_array(commands, commands->n);
-    
+
     execvp(argv[0], argv);
     exit(1);
   }
@@ -304,7 +316,7 @@ void execute_command(char *prompt, LinkedList *commands, ProcessList *processes,
   free(prompt);
 }
 
-char* get_branch_name()
+char *get_branch_name()
 {
   int status = system("git rev-parse --is-inside-work-tree > /dev/null 2>&1");
   if (status != 0)
@@ -330,7 +342,7 @@ char* get_branch_name()
   return NULL;
 }
 
-void printprompt()
+char *printprompt()
 {
   char *branch_name = get_branch_name();
 
@@ -353,9 +365,10 @@ void printprompt()
   char cwd[PATH_MAX + 1];
   cwd[PATH_MAX] = '\0';
   getcwd(cwd, sizeof(cwd));
-  printf(BLU "%s@%s: %s * %s > " RESET, username, hostname, cwd, branch_name);
+  char *prompt_str = emalloc(strlen(BLU) + strlen(username) + strlen(hostname) + strlen(cwd) + strlen(RESET) + strlen(LBLU) + strlen(branch_name) + strlen(RESET) + 1);
+  sprintf(prompt_str, BLU "%s@%s: %s " RESET LBLU "%s > " RESET, username, hostname, cwd, branch_name);
+  return prompt_str;
 }
-
 
 int main()
 {
@@ -367,7 +380,12 @@ int main()
   init_process_list(&processes);
   LinkedList *history = init_llist();
   load_history_from_db(history);
-  // The main event loop 
+  for (Node *cur = history->head; cur != NULL; cur = cur->next)
+  {
+
+    add_history(cur->value);
+  }
+  // The main event loop
   while (1)
   {
 
@@ -377,12 +395,12 @@ int main()
       update_processes(&processes);
     }
 
-    printprompt();
     // the prompt to read commands
-    char *prompt = NULL;
-    size_t size = 0;
-    ssize_t characters_read = getline(&prompt, &size, stdin);
-    if (characters_read == -1)
+    char *shell = printprompt();
+
+    char *prompt = readline(shell);
+    free(shell);
+    if (prompt == NULL)
     {
 
       // handles the ^C flag in terminal
@@ -395,15 +413,20 @@ int main()
         printf("\n\n");
         continue;
       }
+    }
+    if (*prompt == '\0')
+    {
+
       free(prompt);
-      exit(0);
+      printf("\n");
+      continue;
     }
 
     /**
      * Exits the program
      * free's prompt and free process_list
      */
-    if (strncmp("exit\n", prompt, strlen("exit\n")) == 0)
+    if (strncmp("exit", prompt, strlen("exit")) == 0)
     {
       free_process_list(&processes);
       Node *cur = history->head;
@@ -420,6 +443,8 @@ int main()
     }
     prompt[strcspn(prompt, "\n")] = '\0';
     append_to_history_db(history, prompt);
+    add_history(prompt);
+
     LinkedList *commands = store_command(prompt);
     if (commands->head == NULL)
     {
@@ -428,6 +453,7 @@ int main()
 
       printf("\n");
       free(prompt);
+
       continue;
     }
     execute_command(prompt, commands, &processes, history);
