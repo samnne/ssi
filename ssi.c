@@ -269,8 +269,7 @@ void execute_command(char *prompt, LinkedList *commands, ProcessList *processes,
 
     return;
   }
-
-  printf("hello\n");
+  
   pid_t pid = fork();
   if (pid < 0)
   {
@@ -365,8 +364,13 @@ char *printprompt()
   char cwd[PATH_MAX + 1];
   cwd[PATH_MAX] = '\0';
   getcwd(cwd, sizeof(cwd));
-  char *prompt_str = emalloc(strlen(BLU) + strlen(username) + strlen(hostname) + strlen(cwd) + strlen(RESET) + strlen(LBLU) + strlen(branch_name) + strlen(RESET) + 1);
-  sprintf(prompt_str, BLU "%s@%s: %s " RESET LBLU "%s > " RESET, username, hostname, cwd, branch_name);
+  int needed = snprintf(NULL, 0, BLU "%s@%s: %s " RESET LBLU "%s > " RESET,
+                         username, hostname, cwd, branch_name);
+  char *prompt_str = emalloc(needed + 1);
+  sprintf(prompt_str, BLU "%s@%s: %s " RESET LBLU "%s > " RESET,
+          username, hostname, cwd, branch_name);
+
+  free(branch_name);
   return prompt_str;
 }
 
