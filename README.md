@@ -35,8 +35,6 @@ username@hostname: /home/username/ * branch-name >
 
 The feature has its limits as this implementation uses strtok() to tokenize a users input, which makes it increasingly difficult to capture a nested quotes i.e `git commit -m "foo bar"` will break git in this ssi, but `git commit -m "foo_bar"` will work as the tokenizer splits across spaces and in the interest of time, I could not build my own tokenizer to solve this. 
 
-## Future improvements 
-
 
 
 
