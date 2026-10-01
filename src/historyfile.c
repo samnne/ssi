@@ -5,6 +5,8 @@
 #include <string.h>
 #include "unistd.h"
 #include "headers/linkedlist.h"
+
+char cwd[1024];
 char *get_cwd(char cwd[1024], size_t size)
 {
 
@@ -20,9 +22,6 @@ char *get_cwd(char cwd[1024], size_t size)
 void append_to_history_db(LinkedList *history, char *command)
 {
 
-    char cwd[1024];
-    get_cwd(cwd, sizeof(cwd));
-    snprintf(cwd + strlen(cwd), sizeof("db/history.txt") + 1, "/db/history.txt");
 
     FILE *file = fopen(cwd, "a");
     if (file == NULL)
@@ -37,11 +36,10 @@ void append_to_history_db(LinkedList *history, char *command)
 
 void load_history_from_db(LinkedList *history)
 {
-    char cwd[1024];
+
     get_cwd(cwd, sizeof(cwd));
     snprintf(cwd + strlen(cwd), sizeof("db/history.txt") + 1, "/db/history.txt");
 
-    
     FILE *file = fopen(cwd, "r");
     if (file == NULL)
     {
