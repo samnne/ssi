@@ -2,9 +2,14 @@
 
 ## What it does?
 
-`ssi.c` is a simple shell interpreter that runs basic kernal commands and any program available in your 
+`ssi.c` is a simple shell interpreter that runs basic kernel commands and any program available in your 
 PATH. The program uses system functions for change directory functionality, maintains command history with the 
-'history' command as well as other different features of a shell.
+'history' command as well as other features of a shell.
+
+## Features
+
+### Background tasks
+Use `bg <command>` to run any background tasks
 
 ## Extra Features not required
 
